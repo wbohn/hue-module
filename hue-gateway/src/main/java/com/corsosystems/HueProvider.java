@@ -13,6 +13,7 @@ import com.inductiveautomation.ignition.common.model.values.QualityCode;
 import com.inductiveautomation.ignition.common.sqltags.model.types.DataType;
 
 import com.inductiveautomation.ignition.common.tags.model.TagPath;
+import com.inductiveautomation.ignition.common.util.DatasetBuilder;
 import com.inductiveautomation.ignition.gateway.localdb.persistence.IRecordListener;
 import com.inductiveautomation.ignition.gateway.model.GatewayContext;
 import com.inductiveautomation.ignition.gateway.tags.managed.ManagedTagProvider;
@@ -39,13 +40,8 @@ public class HueProvider {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();;
 
-    public HueProvider() {
-
-    }
-
     public HueProvider(GatewayContext gatewayContext) {
         this.gatewayContext = gatewayContext;
-        gatewayContext.getHttpClientManager().getHttpClient();
 
         HubSettingsRecord.META.addRecordListener(new IRecordListener<HubSettingsRecord>() {
             @Override
@@ -99,26 +95,6 @@ public class HueProvider {
 
             String baseUrl = "http://" + ipAddress + "/api/" + apiKey;
 
-//            tagProvider.configureTag("Datatpye update", DataType.Int4Array);
-
-//            List<Integer> intList = new ArrayList();
-//            intList.add(1);
-//            intList.add(2);
-//            int[] intList = {1, 2};
-//            tagProvider.updateValue("Datatpye update no config", intList, QualityCode.Good);
-
-//            String[] columnNames = { "col1", "col2" };
-//
-//            Class[] columnTypes = { Integer.class, Integer.class };
-//
-//            Integer[] col1 = {1, 3};
-//            Integer[] col2 = {2, 4};
-//
-//            Object[][] data = { col1, col2 };
-//            BasicDataset ds = new BasicDataset(columnNames, columnTypes, data);
-//
-//            tagProvider.configureTag("dataset configure update", DataType.DataSet);
-//            tagProvider.updateValue("dataset configure update", ds, QualityCode.Good);
             final JsonNode node;
             try {
                 node = new ObjectMapper().readTree(new URL(baseUrl));
@@ -187,19 +163,9 @@ public class HueProvider {
                         buildDataSet(currentPath, arrayNode);
                     }
                 }
-
-                //tagProvider.updateValue(currentPath, valueObject, QualityCode.Good);
             } catch (Exception e) {
                 logger.error("nested arraynode: " + jsonNode.asText(), e);
             }
-
-
-//            ArrayNode arrayNode = (ArrayNode) jsonNode;
-//            String nodeText = arrayNode.asText();
-//            for (int i = 0; i < arrayNode.size(); i++) {
-//                addTags(baseUrl, currentPath, arrayNode.get(i), map);
-//            }
-
         } else if (jsonNode.isValueNode()) {
             ValueNode valueNode = (ValueNode) jsonNode;
             //logger.info("addKeys: valuenode: " + valueNode.asText());

@@ -1,0 +1,1 @@
+Ignition module to dump Phillips Hue bridge information to a managed tag provider
